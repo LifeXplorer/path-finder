@@ -1,0 +1,103 @@
+### ADDING CITIES
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "A",
+  "cityNameTo": "D",
+  "distance": 2
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "A",
+  "cityNameTo": "C",
+  "distance": 5
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "B",
+  "cityNameTo": "D",
+  "distance": 4
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "B",
+  "cityNameTo": "F",
+  "distance": 8
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "C",
+  "cityNameTo": "G",
+  "distance": 4
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "D",
+  "cityNameTo": "E",
+  "distance": 3
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "D",
+  "cityNameTo": "H",
+  "distance": 7
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "E",
+  "cityNameTo": "G",
+  "distance": 5
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "E",
+  "cityNameTo": "H",
+  "distance": 2
+}
+
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "F",
+  "cityNameTo": "H",
+  "distance": 6
+}
+
+### QUERY FOR ROUTE
+GET http://localhost:8080/route/calculate?fromCity=A&toCity=F
+Accept: application/json
