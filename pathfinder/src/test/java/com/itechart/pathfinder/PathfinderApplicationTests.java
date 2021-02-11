@@ -1,23 +1,20 @@
 package com.itechart.pathfinder;
 
+import com.itechart.pathfinder.dto.Path;
 import com.itechart.pathfinder.entity.City;
 import com.itechart.pathfinder.entity.Route;
 import com.itechart.pathfinder.exception.CityNotFoundException;
 import com.itechart.pathfinder.exception.PathNotFoundException;
-import com.itechart.pathfinder.model.Path;
 import com.itechart.pathfinder.repository.CityRepository;
 import com.itechart.pathfinder.repository.RouteRepository;
 import com.itechart.pathfinder.service.PathfindingService;
 import com.itechart.pathfinder.service.RouteService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +36,6 @@ class PathfinderApplicationTests {
 	RouteService routeService;
 	@Autowired
 	PathfindingService pathfindingService;
-
 
 	@Test
 	void contextLoads() {
@@ -76,15 +72,29 @@ class PathfinderApplicationTests {
 	}
 
 	@Test
-	void computesAllPaths() {
+	void computesAllPossiblePaths() {
 		initRoutes();
-		List<Path> path = pathfindingService.getPath(FROM_CITY_NAME, TO_CITY_NAME);
-		assertEquals(path.size(), 7);
-		double allPathsDistance = path.stream()
+		List<Path> paths = pathfindingService.getPath(FROM_CITY_NAME, TO_CITY_NAME);
+		assertEquals(paths.size(), 7);
+		double allPathsDistance = paths.stream()
 				.map(Path::getDistance)
 				.mapToDouble(Double::doubleValue)
 				.sum();
 		assertEquals(allPathsDistance, 158);
+	}
+
+	@Test
+	void computesSamePathsWhenReversed() {
+		initRoutes();
+		double allPathsDistance = pathfindingService.getPath(FROM_CITY_NAME, TO_CITY_NAME).stream()
+				.map(Path::getDistance)
+				.mapToDouble(Double::doubleValue)
+				.sum();
+		double allPathsReversedDistance = pathfindingService.getPath(TO_CITY_NAME, FROM_CITY_NAME).stream()
+				.map(Path::getDistance)
+				.mapToDouble(Double::doubleValue)
+				.sum();
+		assertEquals(allPathsDistance, allPathsReversedDistance);
 	}
 
 	@Test

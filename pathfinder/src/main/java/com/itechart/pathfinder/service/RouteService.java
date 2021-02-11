@@ -1,8 +1,8 @@
 package com.itechart.pathfinder.service;
 
+import com.itechart.pathfinder.dto.Direction;
 import com.itechart.pathfinder.entity.City;
 import com.itechart.pathfinder.entity.Route;
-import com.itechart.pathfinder.model.CityEdge;
 import com.itechart.pathfinder.repository.CityRepository;
 import com.itechart.pathfinder.repository.RouteRepository;
 import lombok.AccessLevel;
@@ -29,11 +29,11 @@ public class RouteService {
     @CacheEvict(value = INITIALIZED_ROUTING, allEntries = true)
     @Transactional
     public void upsertRoute(String cityNameFrom, String cityNameTo, double distance) {
-        var cityFrom = getExistingOrCreateCity(cityNameFrom);
-        var cityTo = getExistingOrCreateCity(cityNameTo);
+        City cityFrom = getExistingOrCreateCity(cityNameFrom);
+        City cityTo = getExistingOrCreateCity(cityNameTo);
         routeRepository.getByFromCityAndToCity(cityFrom, cityTo)
-                .ifPresentOrElse(city -> updateDistance(distance, city),
-                        () -> createNewCity(distance, cityFrom, cityTo));
+                .ifPresentOrElse(route -> updateRouteDistance(route, distance),
+                        () -> createRoute(cityFrom, cityTo, distance));
     }
 
     @Cacheable(INITIALIZED_ROUTING)
@@ -44,33 +44,33 @@ public class RouteService {
                 .forEach(route -> {
                     City fromCity = route.getFromCity();
                     City toCity = route.getToCity();
-                    var fromCityNode = new CityEdge(toCity, route.getDistance());
-                    fromCity.getAdjacencyList().add(fromCityNode);
-                    var toCityNode = new CityEdge(fromCity, route.getDistance());
-                    toCity.getAdjacencyList().add(toCityNode);
+                    Direction fromCityNode = new Direction(toCity, route.getDistance());
+                    Direction toCityNode = new Direction(fromCity, route.getDistance());
+                    fromCity.getDirections().add(fromCityNode);
+                    toCity.getDirections().add(toCityNode);
                 });
         return cities;
     }
 
-    private void updateDistance(double distance, Route city) {
+    private void updateRouteDistance(Route city, double distance) {
         city.setDistance(distance);
         routeRepository.save(city);
     }
 
-    private void createNewCity(double distance, City cityFrom, City cityTo) {
-        var cityDistance = new Route();
-        cityDistance.setDistance(distance);
-        cityDistance.setFromCity(cityFrom);
-        cityDistance.setToCity(cityTo);
-        routeRepository.save(cityDistance);
+    private void createRoute(City cityFrom, City cityTo, double distance) {
+        Route route = new Route();
+        route.setFromCity(cityFrom);
+        route.setToCity(cityTo);
+        route.setDistance(distance);
+        routeRepository.save(route);
     }
 
     private City getExistingOrCreateCity(String cityName) {
-        Optional<City> byName = cityRepository.getByName(cityName);
-        if (byName.isEmpty()) {
+        Optional<City> city = cityRepository.getByName(cityName);
+        if (city.isEmpty()) {
             return cityRepository.save(City.ofName(cityName));
         }
-        return byName.get();
+        return city.get();
     }
 
 }

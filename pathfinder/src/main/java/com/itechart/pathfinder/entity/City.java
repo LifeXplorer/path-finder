@@ -1,6 +1,6 @@
 package com.itechart.pathfinder.entity;
 
-import com.itechart.pathfinder.model.CityEdge;
+import com.itechart.pathfinder.dto.Direction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class City extends BaseEntity{
     String name;
 
     @Transient
-    List<CityEdge> adjacencyList;
+    List<Direction> directions;
 
     public static City ofName(String name) {
         City city = new City();
@@ -32,11 +32,11 @@ public class City extends BaseEntity{
         return city;
     }
 
-    public List<CityEdge> getAdjacencyList() {
-        if (adjacencyList == null) {
-            adjacencyList = new ArrayList<>();
+    public List<Direction> getDirections() {
+        if (directions == null) {
+            directions = new ArrayList<>();
         }
-        return adjacencyList;
+        return directions;
     }
 
 }

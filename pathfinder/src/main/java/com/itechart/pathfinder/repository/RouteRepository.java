@@ -10,12 +10,5 @@ import java.util.Optional;
 @Repository
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
-    boolean existsByFromCityAndToCity(City fromCity, City toCity);
-
     Optional<Route> getByFromCityAndToCity(City fromCity, City toCity);
-
-    default boolean isNewDistance(City fromCity, City toCity) {
-        return !existsByFromCityAndToCity(fromCity, toCity);
-    }
-
 }

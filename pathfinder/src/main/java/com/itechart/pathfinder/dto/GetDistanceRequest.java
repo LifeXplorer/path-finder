@@ -1,4 +1,4 @@
-package com.itechart.pathfinder.model;
+package com.itechart.pathfinder.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;

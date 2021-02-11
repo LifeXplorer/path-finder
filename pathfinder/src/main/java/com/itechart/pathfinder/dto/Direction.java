@@ -1,12 +1,12 @@
-package com.itechart.pathfinder.model;
+package com.itechart.pathfinder.dto;
 
 import com.itechart.pathfinder.entity.City;
 import lombok.Value;
 
 @Value
-public class CityEdge {
+public class Direction {
 
-    City targetCity;
+    City target;
     double distance;
 
 }

@@ -1,6 +1,7 @@
-package com.itechart.pathfinder.model;
+package com.itechart.pathfinder.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 @Data

@@ -1,40 +1,47 @@
 package com.itechart.pathfinder.service;
 
+import com.itechart.pathfinder.dto.Direction;
+import com.itechart.pathfinder.dto.Path;
 import com.itechart.pathfinder.entity.City;
-import com.itechart.pathfinder.model.CityEdge;
-import com.itechart.pathfinder.model.Path;
 import lombok.experimental.UtilityClass;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 @UtilityClass
 public class PathCalculator {
 
+    private static final double ZERO_DISTANCE = 0.0;
+
     public static List<Path> calculateAllPaths(City sourceCity, City targetCity) {
-        return getAllPaths(targetCity, 0.0, sourceCity, new HashSet<>());
+        return getAllPaths(sourceCity, targetCity, ZERO_DISTANCE, new HashSet<>());
     }
 
-    private List<Path> getAllPaths(City targetVertex, Double totalPath, City startVertex, Set<City> visitedCities) {
-        visitedCities.add(targetVertex);
-        List<Path> retLists = new ArrayList<>();
-        if (targetVertex.equals(startVertex)) {
-            List<String> leafList = new LinkedList<>();
-            leafList.add(targetVertex.getName());
-            retLists.add(new Path(leafList, totalPath));
+    private List<Path> getAllPaths(City sourceCity, City targetCity, Double totalDistance, Set<City> visitedCities) {
+        visitedCities.add(targetCity);
+        List<Path> paths = new ArrayList<>();
+        if (targetCity.equals(sourceCity)) {
+            List<String> citiesRoute = new LinkedList<>();
+            citiesRoute.add(targetCity.getName());
+            paths.add(new Path(citiesRoute, totalDistance));
         } else {
-            for (CityEdge edge : targetVertex.getAdjacencyList()) {
-                if (visitedCities.contains(edge.getTargetCity())) {
+            for (Direction direction : targetCity.getDirections()) {
+                if (visitedCities.contains(direction.getTarget())) {
                     continue;
                 }
-                List<Path> nodeLists = getAllPaths(edge.getTargetCity(), edge.getDistance(), startVertex, visitedCities);
+                List<Path> nodeLists =
+                        getAllPaths(sourceCity, direction.getTarget(), direction.getDistance(), visitedCities);
                 for (Path path : nodeLists) {
-                    path.getCities().add(targetVertex.getName());
-                    path.setDistance(path.getDistance() + totalPath);
-                    retLists.add(path);
+                    path.getCities().add(targetCity.getName());
+                    path.setDistance(path.getDistance() + totalDistance);
+                    paths.add(path);
                 }
-                visitedCities.remove(edge.getTargetCity());
+                visitedCities.remove(direction.getTarget());
             }
         }
-        return retLists;
+        return paths;
     }
 }
