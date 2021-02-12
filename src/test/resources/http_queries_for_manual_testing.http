@@ -98,6 +98,16 @@ Content-Type: application/json
   "distance": 6
 }
 
+###
+POST http://localhost:8080/route/add
+Content-Type: application/json
+
+{
+  "cityNameFrom": "K",
+  "cityNameTo": "M",
+  "distance": 5
+}
+
 ### QUERY FOR ROUTE
 GET http://localhost:8080/route/calculate?fromCity=A&toCity=F
 Accept: application/json
