@@ -44,7 +44,6 @@ public class RouteService {
     }
 
     @Cacheable(INITIALIZED_ROUTING)
-    @Transactional
     public List<CityVertex> initRouting() {
         Map<String, CityVertex> nameCityMap = new HashMap<>();
         routeRepository.findAll()
