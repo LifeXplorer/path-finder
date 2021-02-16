@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.PriorityQueue;
 
 import static com.itechart.pathfinder.cache.CacheNamesContainer.INITIALIZED_ROUTING;
 
@@ -29,8 +29,11 @@ public class RouteService {
     @CacheEvict(value = INITIALIZED_ROUTING, allEntries = true)
     @Transactional
     public void upsertRoute(String cityNameFrom, String cityNameTo, double distance) {
-        City cityFrom = getExistingOrCreateCity(cityNameFrom);
-        City cityTo = getExistingOrCreateCity(cityNameTo);
+        PriorityQueue<String> sortedNamesQueue = new PriorityQueue<>(2);
+        sortedNamesQueue.add(cityNameFrom);
+        sortedNamesQueue.add(cityNameTo);
+        City cityFrom = getExistingOrCreateCity(sortedNamesQueue.poll());
+        City cityTo = getExistingOrCreateCity(sortedNamesQueue.poll());
         routeRepository.getByFromCityAndToCity(cityFrom, cityTo)
                 .ifPresentOrElse(route -> updateRouteDistance(route, distance),
                         () -> createRoute(cityFrom, cityTo, distance));
@@ -66,11 +69,8 @@ public class RouteService {
     }
 
     private City getExistingOrCreateCity(String cityName) {
-        Optional<City> city = cityRepository.getByName(cityName);
-        if (city.isEmpty()) {
-            return cityRepository.save(City.ofName(cityName));
-        }
-        return city.get();
+        return cityRepository.getByName(cityName)
+                .orElseGet(() -> cityRepository.save(City.ofName(cityName)));
     }
 
 }

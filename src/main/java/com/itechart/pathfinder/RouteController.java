@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class RouteController {
     RouteService routeService;
 
     @PostMapping("/add")
-    public ResponseEntity<Void> upsertRoute(@RequestBody AddDistanceRequest request) {
+    public ResponseEntity<Void> upsertRoute(@Valid @RequestBody AddDistanceRequest request) {
         routeService.upsertRoute(request.getCityNameFrom(), request.getCityNameTo(), request.getDistance());
         return ResponseEntity.ok().build();
     }

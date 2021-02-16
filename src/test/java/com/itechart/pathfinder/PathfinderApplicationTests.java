@@ -27,6 +27,7 @@ class PathfinderApplicationTests {
 	private static final String FROM_CITY_NAME = "A";
 	private static final String TO_CITY_NAME = "F";
 	private static final double DEFAULT_DISTANCE = 2.0;
+	private static final double UPDATE_DISTANCE = 3.0;
 
 	@Autowired
 	CityRepository cityRepository;
@@ -66,9 +67,23 @@ class PathfinderApplicationTests {
 		Optional<Route> route = routeRepository.getByFromCityAndToCity(cityFrom.get(), cityTo.get());
 		assertTrue(route.isPresent() && DEFAULT_DISTANCE == route.get().getDistance());
 
-		routeService.upsertRoute(FROM_CITY_NAME, TO_CITY_NAME, 3.0);
+		routeService.upsertRoute(FROM_CITY_NAME, TO_CITY_NAME, UPDATE_DISTANCE);
 		Optional<Route> updatedRoute = routeRepository.getByFromCityAndToCity(cityFrom.get(), cityTo.get());
-		assertTrue(updatedRoute.isPresent() && 3.0 == updatedRoute.get().getDistance());
+		assertTrue(updatedRoute.isPresent() && UPDATE_DISTANCE == updatedRoute.get().getDistance());
+	}
+
+	@Test
+	void doesNotInsertDuplicateRoutesOnReversedCitiesOrder() {
+		routeService.upsertRoute(FROM_CITY_NAME, TO_CITY_NAME, DEFAULT_DISTANCE);
+
+		routeService.upsertRoute(TO_CITY_NAME, FROM_CITY_NAME, UPDATE_DISTANCE);
+
+		List<Route> routes = routeRepository.findAll();
+		assertEquals(routes.size(), 1);
+		Route route = routes.get(0);
+		assertEquals(FROM_CITY_NAME, route.getFromCity().getName());
+		assertEquals(TO_CITY_NAME, route.getToCity().getName());
+		assertEquals(UPDATE_DISTANCE, route.getDistance());
 	}
 
 	@Test

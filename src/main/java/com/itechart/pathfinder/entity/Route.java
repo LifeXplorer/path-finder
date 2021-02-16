@@ -10,9 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "route")
+@Table(name = "route", uniqueConstraints =
+        {@UniqueConstraint(name = "route_cities_unique_idx", columnNames = {"from_city_id", "to_city_id"})})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Setter
 @Getter
