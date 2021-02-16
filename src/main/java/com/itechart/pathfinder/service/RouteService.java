@@ -1,5 +1,6 @@
 package com.itechart.pathfinder.service;
 
+import com.itechart.pathfinder.dto.CityVertex;
 import com.itechart.pathfinder.dto.Direction;
 import com.itechart.pathfinder.entity.City;
 import com.itechart.pathfinder.entity.Route;
@@ -13,7 +14,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import static com.itechart.pathfinder.cache.CacheNamesContainer.INITIALIZED_ROUTING;
@@ -41,18 +45,22 @@ public class RouteService {
 
     @Cacheable(INITIALIZED_ROUTING)
     @Transactional
-    public List<City> initRouting() {
-        List<City> cities = cityRepository.findAll();
+    public List<CityVertex> initRouting() {
+        Map<String, CityVertex> nameCityMap = new HashMap<>();
         routeRepository.findAll()
                 .forEach(route -> {
-                    City fromCity = route.getFromCity();
-                    City toCity = route.getToCity();
+                    CityVertex fromCity = getByNameOrInsert(nameCityMap, route.getFromCity().getName());
+                    CityVertex toCity = getByNameOrInsert(nameCityMap, route.getToCity().getName());
                     Direction fromCityNode = new Direction(toCity, route.getDistance());
                     Direction toCityNode = new Direction(fromCity, route.getDistance());
                     fromCity.getDirections().add(fromCityNode);
                     toCity.getDirections().add(toCityNode);
                 });
-        return cities;
+        return new ArrayList<>(nameCityMap.values());
+    }
+
+    private CityVertex getByNameOrInsert(Map<String, CityVertex> nameCityMap, String name) {
+        return nameCityMap.computeIfAbsent(name, k -> CityVertex.ofName(name));
     }
 
     private void updateRouteDistance(Route city, double distance) {
