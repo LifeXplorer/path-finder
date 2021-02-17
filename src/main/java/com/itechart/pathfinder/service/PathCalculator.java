@@ -20,7 +20,7 @@ public class PathCalculator {
         return getAllPaths(sourceCity, targetCity, ZERO_DISTANCE, new HashSet<>());
     }
 
-    private List<Path> getAllPaths(CityVertex sourceCity, CityVertex targetCity, Double totalDistance, Set<CityVertex> visitedCities) {
+    private static List<Path> getAllPaths(CityVertex sourceCity, CityVertex targetCity, Double totalDistance, Set<CityVertex> visitedCities) {
         visitedCities.add(targetCity);
         List<Path> paths = new ArrayList<>();
         if (targetCity.equals(sourceCity)) {
