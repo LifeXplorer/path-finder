@@ -1,8 +1,8 @@
 package com.itechart.pathfinder.service;
 
+import com.itechart.pathfinder.dto.CityVertex;
 import com.itechart.pathfinder.dto.Direction;
 import com.itechart.pathfinder.dto.Path;
-import com.itechart.pathfinder.entity.City;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -16,11 +16,11 @@ public class PathCalculator {
 
     private static final double ZERO_DISTANCE = 0.0;
 
-    public static List<Path> calculateAllPaths(City sourceCity, City targetCity) {
+    public static List<Path> calculateAllPaths(CityVertex sourceCity, CityVertex targetCity) {
         return getAllPaths(sourceCity, targetCity, ZERO_DISTANCE, new HashSet<>());
     }
 
-    private List<Path> getAllPaths(City sourceCity, City targetCity, Double totalDistance, Set<City> visitedCities) {
+    private static List<Path> getAllPaths(CityVertex sourceCity, CityVertex targetCity, Double totalDistance, Set<CityVertex> visitedCities) {
         visitedCities.add(targetCity);
         List<Path> paths = new ArrayList<>();
         if (targetCity.equals(sourceCity)) {

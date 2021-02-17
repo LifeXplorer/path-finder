@@ -1,12 +1,15 @@
 package com.itechart.pathfinder.dto;
 
-import com.itechart.pathfinder.entity.City;
 import lombok.Value;
 
-@Value
-public class Direction {
+import java.io.Serializable;
 
-    City target;
+@Value
+public class Direction implements Serializable {
+
+    private static final long serialVersionUID = -4455773750573921L;
+
+    CityVertex target;
     double distance;
 
 }

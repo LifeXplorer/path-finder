@@ -1,7 +1,7 @@
 package com.itechart.pathfinder.service;
 
+import com.itechart.pathfinder.dto.CityVertex;
 import com.itechart.pathfinder.dto.Path;
-import com.itechart.pathfinder.entity.City;
 import com.itechart.pathfinder.exception.CityNotFoundException;
 import com.itechart.pathfinder.exception.PathNotFoundException;
 import lombok.AccessLevel;
@@ -19,9 +19,9 @@ public class PathfindingService {
     RouteService routeService;
 
     public List<Path> getPath(String fromCityName, String toCityName) {
-        List<City> cities = routeService.initRouting();
-        City fromCity = getByNameOrThrow(cities, fromCityName);
-        City toCity = getByNameOrThrow(cities, toCityName);
+        List<CityVertex> cities = routeService.initRouting();
+        CityVertex fromCity = getByNameOrThrow(cities, fromCityName);
+        CityVertex toCity = getByNameOrThrow(cities, toCityName);
 
         List<Path> paths = PathCalculator.calculateAllPaths(fromCity, toCity);
         if (paths.isEmpty()) {
@@ -30,7 +30,7 @@ public class PathfindingService {
         return paths;
     }
 
-    private City getByNameOrThrow(List<City> cities, String name) {
+    private CityVertex getByNameOrThrow(List<CityVertex> cities, String name) {
         return cities.stream()
                 .filter(city -> name.equals(city.getName()))
                 .findFirst()
